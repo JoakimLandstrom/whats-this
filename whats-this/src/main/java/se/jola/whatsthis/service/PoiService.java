@@ -1,24 +1,28 @@
 package se.jola.whatsthis.service;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import se.jola.whatsthis.exceptions.ApiException;
 import se.jola.whatsthis.exceptions.ServiceException;
 import se.jola.whatsthis.externalapi.GeoApi;
 import se.jola.whatsthis.externalapi.InfoApi;
 
-public class GeoService {
+@Component
+public class PoiService {
 
-    private final GeoApi geoApi;
-    private final InfoApi infoApi;
-
-    public GeoService(GeoApi geoRepository, InfoApi infoApi) {
-	this.geoApi = geoRepository;
-	this.infoApi = infoApi;
-    }
+    @Autowired
+    private GeoApi geoApi;
+    
+    @Autowired
+    private InfoApi infoApi;
 
     public String getClosestPois(String lat, String lng) {
 
 	try {
-	    return geoApi.getLocationInfo(lat, lng).toString();
+	    return jsonArrayToString(geoApi.getLocationInfo(lat, lng), "names");
 	} catch (ApiException e) {
 	    throw new ServiceException("Couldnt fetch geolocation names from lat:" + lat + " and lng:" + lng);
 	}
@@ -31,5 +35,14 @@ public class GeoService {
 	} catch (ApiException e) {
 	    throw new ServiceException("Couldn't get poi info from:" + name);
 	}
+    }
+    
+    private String jsonArrayToString(JSONArray jsonArray, String name){
+	
+	JSONObject jsonObject = new JSONObject();
+	
+	jsonObject.put(name, jsonArray);
+	
+	return jsonObject.toString();
     }
 }

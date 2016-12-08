@@ -1,7 +1,7 @@
 package se.jola.whatsthis.externalapi.impl;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -12,12 +12,13 @@ import java.util.List;
 import java.util.Properties;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.stereotype.Component;
 
 import se.jola.whatsthis.exceptions.ApiException;
 import se.jola.whatsthis.externalapi.GeoApi;
 
+@Component
 public final class GoogleGeoImpl implements GeoApi {
 
     private URLConnection getConnection(String lat, String lng) throws IOException {
@@ -32,7 +33,7 @@ public final class GoogleGeoImpl implements GeoApi {
 	return url.openConnection();
     }
 
-    public List<String> getLocationInfo(String lat, String lng) throws ApiException {
+    public JSONArray getLocationInfo(String lat, String lng) throws ApiException {
 
 	try {
 	    URLConnection connection = getConnection(lat, lng);
@@ -50,11 +51,10 @@ public final class GoogleGeoImpl implements GeoApi {
 	    reader.close();
 
 	    return retrieveName(builder.toString());
+
 	} catch (IOException e) {
 	    e.printStackTrace();
 	    throw new ApiException("Couldnt get info from lat:" + lat + "and lng:" + lng + " from google");
-	} catch (JSONException e) {
-	    throw new ApiException("JSON error");
 	}
     }
 
@@ -62,18 +62,16 @@ public final class GoogleGeoImpl implements GeoApi {
 
 	Properties properties = new Properties();
 
-	InputStream inputStream = getClass().getClassLoader().getResourceAsStream("keys.properties");
+	InputStream inputStream = new FileInputStream("src/main/resources/keys.properties");
 
-	if (inputStream != null) {
-	    properties.load(inputStream);
-	} else {
-	    throw new FileNotFoundException();
-	}
+	properties.load(inputStream);
 
-	return properties.getProperty("key");
+	String property = properties.getProperty("key");
+
+	return property;
     }
 
-    private List<String> retrieveName(String jsonFile) {
+    private JSONArray retrieveName(String jsonFile) {
 
 	JSONObject jsonObject = new JSONObject(jsonFile);
 
@@ -88,7 +86,7 @@ public final class GoogleGeoImpl implements GeoApi {
 	    nameList.add(jsObject.getString("name"));
 	}
 
-	return nameList;
+	return new JSONArray(nameList);
 
     }
 

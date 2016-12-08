@@ -6,9 +6,12 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 
+import org.springframework.stereotype.Component;
+
 import se.jola.whatsthis.exceptions.ApiException;
 import se.jola.whatsthis.externalapi.InfoApi;
 
+@Component
 public class WikipediaInfoImpl implements InfoApi {
 
     private URLConnection getConnection(String name) throws IOException {
