@@ -1,0 +1,8 @@
+whatsthisapp/target/
+src/main/resources/keys.properties
+
+.metadata
+.recommenders
+.git
+RemoteSystemsTempFiles/
+whatsthisapp/.settings/
