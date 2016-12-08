@@ -1,14 +1,11 @@
 package se.jola.whatsthis.model;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
 
-@MappedSuperclass
+//@MappedSuperclass
 public abstract class AbstractEntity {
 	
-	@Id
-	@GeneratedValue
+//	@Id
+//	@GeneratedValue
 	protected Long id;
 	
 	public Long getId() {

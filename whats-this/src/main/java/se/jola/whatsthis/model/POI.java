@@ -1,12 +1,7 @@
 package se.jola.whatsthis.model;
 
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-@Entity
-@EntityListeners(AuditingEntityListener.class)
+//@Entity
+//@EntityListeners(AuditingEntityListener.class)
 public class POI extends AbstractEntity {
 
     private String name;

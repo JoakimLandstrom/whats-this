@@ -81,9 +81,9 @@ public final class GoogleGeoImpl implements GeoApi {
 
 	List<String> nameList = new ArrayList<>();
 
-	for (Object object : jsonArray) {
+	for (int i = 0; i < jsonArray.length(); i++) {
 
-	    JSONObject jsObject = (JSONObject) object;
+	    JSONObject jsObject = (JSONObject) jsonArray.get(i);
 
 	    nameList.add(jsObject.getString("name"));
 	}

@@ -1,10 +1,8 @@
 package se.jola.whatsthis.model;
 
-import javax.persistence.OneToMany;
 
 public final class SavedPOI extends POI {
-
-    @OneToMany
+    
     private User user;
 
     private String userComment;
