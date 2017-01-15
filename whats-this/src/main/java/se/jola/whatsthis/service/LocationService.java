@@ -11,7 +11,7 @@ import se.jola.whatsthis.externalapi.GeoApi;
 import se.jola.whatsthis.externalapi.InfoApi;
 
 @Component
-public class PoiService {
+public class LocationService {
 
     @Autowired
     private GeoApi geoApi;
@@ -42,7 +42,8 @@ public class PoiService {
 	JSONObject jsonObject = new JSONObject();
 	
 	jsonObject.put(name, jsonArray);
-	
+
 	return jsonObject.toString();
     }
+   
 }

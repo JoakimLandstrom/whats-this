@@ -26,7 +26,7 @@ public final class GoogleGeoImpl implements GeoApi {
 	StringBuilder builder = new StringBuilder();
 
 	builder.append("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=").append(lat).append(",")
-		.append(lng).append("&radius=50&type=point_of_interest&key=").append(getKey());
+		.append(lng).append("&radius=500&type=point_of_interest|church|museum&key=").append(getKey());
 
 	URL url = new URL(builder.toString());
 
@@ -53,7 +53,6 @@ public final class GoogleGeoImpl implements GeoApi {
 	    return retrieveName(builder.toString());
 
 	} catch (IOException e) {
-	    e.printStackTrace();
 	    throw new ApiException("Couldnt get info from lat:" + lat + "and lng:" + lng + " from google");
 	}
     }
@@ -66,9 +65,7 @@ public final class GoogleGeoImpl implements GeoApi {
 
 	properties.load(inputStream);
 
-	String property = properties.getProperty("key");
-
-	return property;
+	return properties.getProperty("key");
     }
 
     private JSONArray retrieveName(String jsonFile) {
@@ -82,8 +79,11 @@ public final class GoogleGeoImpl implements GeoApi {
 	for (int i = 0; i < jsonArray.length(); i++) {
 
 	    JSONObject jsObject = (JSONObject) jsonArray.get(i);
+	    
+	    if (!jsObject.getString("name").toLowerCase().contains(" ab")) {
 
-	    nameList.add(jsObject.getString("name"));
+		nameList.add(jsObject.getString("name"));
+	    }
 	}
 
 	return new JSONArray(nameList);

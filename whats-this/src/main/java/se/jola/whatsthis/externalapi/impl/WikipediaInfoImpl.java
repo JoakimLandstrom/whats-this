@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLEncoder;
 
 import org.springframework.stereotype.Component;
 
@@ -18,11 +19,10 @@ public class WikipediaInfoImpl implements InfoApi {
 
 	StringBuilder builder = new StringBuilder();
 
-	builder.append("https://en.wikipedia.org/w/api.php?format=json&action=query&titles=").append(name)
-		.append("&prop=revisions&rvprop=content&callback=?");
-
+	builder.append("https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts|info&exintro=&inprop=url&explaintext=&titles=").append(URLEncoder.encode(name,"UTF-8"));
+	
 	URL url = new URL(builder.toString());
-
+	
 	return url.openConnection();
     }
 
@@ -41,7 +41,6 @@ public class WikipediaInfoImpl implements InfoApi {
 
 	    while ((line = reader.readLine()) != null) {
 		builder.append(line).append("\n");
-		System.out.println(line);
 	    }
 
 	    reader.close();
