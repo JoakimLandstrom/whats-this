@@ -1,6 +1,7 @@
 package se.jola.whatsthis.resources;
 
 
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import se.jola.whatsthis.models.LocationRequestBean;
@@ -17,18 +18,12 @@ import javax.ws.rs.core.Response;
 public final class LocationResource {
 
     @Autowired
-    LocationService service;
+    private LocationService service;
 
     @GET
     public Response getClosestPois(@BeanParam LocationRequestBean location) {
 
-        return Response.ok(service.getClosestPois(location.getLat(), location.getLng())).build();
+        return Response.ok(new Gson().toJson(service.getLocations(location.getLat(), location.getLng()))).build();
     }
 
-    @GET
-    @Path("{name}")
-    public Response getLocationInfo(@PathParam("name") String name) {
-
-        return Response.ok(service.getPoiInfo(name)).build();
-    }
 }

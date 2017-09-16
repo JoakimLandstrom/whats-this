@@ -4,6 +4,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.stereotype.Component;
 import se.jola.whatsthis.exceptions.ApiException;
+import se.jola.whatsthis.models.Location;
 
 import java.io.*;
 import java.net.URL;
@@ -20,14 +21,14 @@ public final class GoogleGeoApi {
         StringBuilder builder = new StringBuilder();
 
         builder.append("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=").append(lat).append(",")
-                .append(lng).append("&radius=500&type=point_of_interest|church|museum&key=").append(getKey());
-
+                .append(lng).append("&type=point_of_interest|locality|natural_feature|place_of_worship|establishment&radius=200&key=").append(getKey());
         URL url = new URL(builder.toString());
 
         return url.openConnection();
     }
 
-    public JSONArray getLocationInfo(String lat, String lng) throws ApiException {
+
+    public List<Location> getLocations(String lat, String lng) throws ApiException {
 
         try {
             URLConnection connection = getConnection(lat, lng);
@@ -44,7 +45,7 @@ public final class GoogleGeoApi {
 
             reader.close();
 
-            return retrieveName(builder.toString());
+            return retrieveLocations(builder.toString());
 
         } catch (IOException e) {
             throw new ApiException("Couldnt get info from lat:" + lat + "and lng:" + lng + " from google");
@@ -55,32 +56,31 @@ public final class GoogleGeoApi {
 
         Properties properties = new Properties();
 
-        InputStream inputStream = new FileInputStream("src/main/resources/keys.properties");
+        InputStream inputStream = new FileInputStream("src/main/resources/application.properties");
 
         properties.load(inputStream);
 
         return properties.getProperty("key");
     }
 
-    private JSONArray retrieveName(String jsonFile) {
+    private List<Location> retrieveLocations(String jsonFile) {
 
         JSONObject jsonObject = new JSONObject(jsonFile);
 
         JSONArray jsonArray = jsonObject.getJSONArray("results");
 
-        List<String> nameList = new ArrayList<>();
+        List<Location> locationList = new ArrayList<>();
 
         for (int i = 0; i < jsonArray.length(); i++) {
 
             JSONObject jsObject = (JSONObject) jsonArray.get(i);
 
-            if (!jsObject.getString("name").toLowerCase().contains(" ab")) {
+            Location location = new Location(jsObject.getString("name"), jsObject.getString("vicinity"));
 
-                nameList.add(jsObject.getString("name"));
-            }
+            locationList.add(location);
         }
 
-        return new JSONArray(nameList);
+        return locationList;
     }
 
 }

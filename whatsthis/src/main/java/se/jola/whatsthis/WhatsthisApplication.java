@@ -2,7 +2,8 @@ package se.jola.whatsthis;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import se.jola.whatsthis.properties.PropertyReader;
+import se.jola.whatsthis.models.Location;
+
 
 @SpringBootApplication
 public class WhatsthisApplication {
