@@ -1,7 +1,7 @@
 @REM ----------------------------------------------------------------------------
 @REM Licensed to the Apache Software Foundation (ASF) under one
 @REM or more contributor license agreements.  See the NOTICE file
-@REM distributed with this work for additional information
+@REM distributed with this work for additional extract
 @REM regarding copyright ownership.  The ASF licenses this file
 @REM to you under the Apache License, Version 2.0 (the
 @REM "License"); you may not use this file except in compliance
@@ -29,7 +29,7 @@
 @REM MAVEN_BATCH_PAUSE - set to 'on' to wait for a key stroke before ending
 @REM MAVEN_OPTS - parameters passed to the Java VM when running Maven
 @REM     e.g. to debug Maven itself, use
-@REM set MAVEN_OPTS=-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8000
+@REM set MAVEN_OPTS=-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,vicinity=8000
 @REM MAVEN_SKIP_RC - flag to disable loading of mavenrc files
 @REM ----------------------------------------------------------------------------
 

@@ -8,6 +8,7 @@ import se.jola.whatsthis.externalapis.impl.GoogleGeoApi;
 import se.jola.whatsthis.externalapis.impl.WikiInfoApi;
 import se.jola.whatsthis.models.ExceptionModel;
 import se.jola.whatsthis.models.Location;
+import se.jola.whatsthis.models.LocationRequest;
 
 import javax.ws.rs.core.Response;
 import java.util.List;
@@ -21,15 +22,16 @@ public final class LocationService {
     @Autowired
     private WikiInfoApi infoApi;
 
-    public List<Location> getLocations(String lat, String lng) {
+    public List<Location> getLocations(LocationRequest locationRequest) {
 
         try {
-            List<Location> locations = geoApi.getLocations(lat, lng);
-
+            //List<Location> locations = geoApi.getLocations(locationRequest.getLat(), locationRequest.getLng());
+            List<Location> locations = geoApi.getLocationsFromRequest(locationRequest);
             return getLocationsInfo(locations);
         } catch (ApiException e) {
             e.printStackTrace();
-            throw new ServiceException(new ExceptionModel("Couldnt fetch geolocation names from lat:" + lat + " and lng:" + lng, Response.Status.INTERNAL_SERVER_ERROR));
+            throw new ServiceException(new ExceptionModel("Couldnt fetch geolocation names from lat:"
+                    + locationRequest.getLat() + " and lng:" + locationRequest.getLng(), Response.Status.INTERNAL_SERVER_ERROR));
         }
     }
 
@@ -37,7 +39,7 @@ public final class LocationService {
 
         for (Location location : locations) {
             try {
-                infoApi.getInfoAboutLocation(location);
+                infoApi.getInfoAboutLocationName(location);
 
             } catch (ApiException e) {
                 throw new ServiceException(new ExceptionModel("Couldn't get poi info from:" + location.getName(), Response.Status.INTERNAL_SERVER_ERROR));

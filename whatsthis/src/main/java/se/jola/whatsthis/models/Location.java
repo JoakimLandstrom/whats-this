@@ -1,59 +1,68 @@
 package se.jola.whatsthis.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public final class Location {
 
     private String name;
 
-    private String address;
+    private String vicinity;
 
-    private String information;
+    private String extract;
 
-    private String infoLink;
+    private String fullUrl;
 
     private String picLink;
 
-    public Location(String name, String country){
+    public Location(){
+
+    }
+
+    public Location(String name, String vicinity){
         this.name = name;
-        this.address = country;
+        this.vicinity = vicinity;
     }
 
     public String getName() {
         return name;
     }
 
-    public String getAddress() {
-        return address;
+    public String getVicinity() {
+        return vicinity;
     }
 
-    public String getInformation() {
-        return information;
+    public String getExtract() {
+        return extract;
     }
 
-    public String getInfoLink() {
-        return infoLink;
+    public String getFullUrl() {
+        return fullUrl;
     }
 
     public String getPicLink() {
         return picLink;
     }
 
-    public void setInformation(String information) {
-        this.information = information;
+    public void setExtract(String extract) {
+        this.extract = extract;
     }
 
-    public void setInfoLink(String infoLink) {
-        this.infoLink = infoLink;
+    public void setFullUrl(String fullUrl) {
+        this.fullUrl = fullUrl;
     }
 
     public void setPicLink(String picLink) {
         this.picLink = picLink;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setVicinity(String vicinity) {
+        this.vicinity = vicinity;
     }
 
     public void setName(String name) {
         this.name = name;
     }
+
 }

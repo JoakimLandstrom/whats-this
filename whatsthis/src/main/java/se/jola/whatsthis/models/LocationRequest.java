@@ -2,7 +2,7 @@ package se.jola.whatsthis.models;
 
 import javax.ws.rs.QueryParam;
 
-public final class LocationRequestBean {
+public final class LocationRequest {
 
     @QueryParam("lng")
     private String lng;

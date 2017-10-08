@@ -1,70 +1,54 @@
 package se.jola.whatsthis.externalapis.impl;
 
-
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 import se.jola.whatsthis.exceptions.ApiException;
 import se.jola.whatsthis.models.Location;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
+import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 
 @Component
 public final class WikiInfoApi {
 
-    private boolean exception = false;
+    private RestTemplate restTemplate = new RestTemplate();
 
-    private String orignalName = "";
+    private boolean exception;
 
-    private URLConnection getConnection(String name) throws IOException {
+    private String getUrl(String name) throws UnsupportedEncodingException {
 
         StringBuilder builder = new StringBuilder();
 
-        builder.append("https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts|info&exintro=&inprop=url&explaintext=&titles=").append(URLEncoder.encode(name, "UTF-8"));
+        return builder.append("https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts|info&exintro=&inprop=url&explaintext=&titles=").append(name.replace(" ", "%20")).toString();
 
-        URL url = new URL(builder.toString());
-
-        return url.openConnection();
     }
 
-    public Location getInfoAboutLocation(Location location) throws ApiException {
+    public Location getInfoAboutLocationName(Location location) throws ApiException {
 
         try {
 
-            URLConnection connection = getConnection(location.getName());
+            String jsonResponse = restTemplate.getForObject(getUrl(location.getName()), String.class);
 
-            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            return getInformationFromJson(jsonResponse, location);
 
-            StringBuilder builder = new StringBuilder();
-
-            String line = "";
-
-            while ((line = reader.readLine()) != null) {
-                builder.append(line).append("\n");
-            }
-
-            reader.close();
-
-            return getInformationFromJson(builder.toString(), location);
-
-        } catch (IOException e) {
+        } catch (UnsupportedEncodingException e) {
             throw new ApiException("Couldnt get wiki-info of: " + location.getName());
-
         } catch (JSONException e) {
-            if (!exception) {
+
+            if(!exception) {
                 exception = !exception;
-                location.setName(location.getName().split(" ")[0]);
-                return getInfoAboutLocation(location);
-            } else {
-                return location;
+                Location newLocation = new Location(location.getName(), location.getVicinity());
+
+                newLocation.setName(refactorName(newLocation));
+                newLocation = getInfoAboutLocationName(location);
+
+                if (newLocation.getExtract() != null && !newLocation.getExtract().isEmpty() && partiallyContains(newLocation.getExtract(), location.getName())) {
+                    return newLocation;
+                }
             }
 
+            return location;
         }
     }
 
@@ -83,10 +67,50 @@ public final class WikiInfoApi {
 
         JSONObject infoObject = jsObject.getJSONObject(objectId);
 
-        location.setInformation(infoObject.getString("extract"));
-        location.setInfoLink(infoObject.getString("fullurl"));
+        location.setExtract(infoObject.getString("extract"));
+        location.setFullUrl(infoObject.getString("fullUrl"));
 
         return location;
+    }
+
+    private boolean partiallyContains(String container, String key) {
+
+        if(key == null || key.isEmpty() || key.equals(" ")){
+            return false;
+        }
+
+        String[] keys = key.split(" ");
+
+        int score = 0;
+
+        for (String partialKey : keys) {
+            if (container.contains(partialKey)) {
+                score++;
+            }
+        }
+
+        System.out.println(container);
+        return (keys.length/(float)score < 0.5);
+    }
+
+    private String refactorName(Location location){
+
+        String[] partialNames = location.getName().split(" ");
+
+        String name = location.getName();
+
+        if(partialNames.length > 1 && location.getName().contains(location.getVicinity())){
+            return name.replace(location.getVicinity(), "");
+        }else if(partialNames.length == 2){
+            return name.split(" ")[0];
+        }else{
+           StringBuilder builder = new StringBuilder();
+
+           for(int i = 0; i< partialNames.length-1; i++){
+                builder.append(partialNames[i]);
+           }
+           return builder.toString();
+        }
     }
 
 }
