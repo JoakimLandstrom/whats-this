@@ -1,10 +1,12 @@
 package se.jola.whatsthis.externalapis.impl;
 
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import se.jola.whatsthis.exceptions.ApiException;
 import se.jola.whatsthis.models.PositionInfoResponse;
-import se.jola.whatsthis.models.Location;
+import se.jola.whatsthis.models.LocationResponse;
 import se.jola.whatsthis.models.LocationRequest;
 
 import java.io.*;
@@ -24,13 +26,12 @@ public final class GoogleGeoApi {
 
     }
 
-    public List<Location> getLocationsFromRequest(LocationRequest locationRequest) throws ApiException {
+    public List<LocationResponse> getLocationsFromRequest(LocationRequest locationRequest) throws ApiException {
 
         try {
-            List<Location> locations = restTemplate.getForObject(getUrl(locationRequest), PositionInfoResponse.class).getLocationList();
-
-            return locations;
-        } catch (IOException e) {
+            List<LocationResponse> locationResponses = restTemplate.getForObject(getUrl(locationRequest), PositionInfoResponse.class).getLocationResponseList();
+            return locationResponses;
+        } catch (RestClientException | IOException e) {
             throw new ApiException("Couldnt get info from lat:" + locationRequest.getLat() + "and lng:" + locationRequest.getLng() + " from google");
         }
     }

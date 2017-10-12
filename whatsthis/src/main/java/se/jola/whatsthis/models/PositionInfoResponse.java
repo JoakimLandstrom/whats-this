@@ -7,13 +7,13 @@ import java.util.List;
 public final class PositionInfoResponse {
 
     @JsonProperty("results")
-    private List<Location> locationList;
+    private List<LocationResponse> locationResponseList;
 
-    public List<Location> getLocationList() {
-        return locationList;
+    public List<LocationResponse> getLocationResponseList() {
+        return locationResponseList;
     }
 
-    public void setLocationList(List<Location> location) {
-        this.locationList = location;
+    public void setLocationResponseList(List<LocationResponse> locationResponse) {
+        this.locationResponseList = locationResponse;
     }
 }

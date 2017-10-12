@@ -1,21 +1,29 @@
 package se.jola.whatsthis.models;
 
-import javax.ws.rs.QueryParam;
 
 public final class LocationRequest {
 
-    @QueryParam("lng")
-    private String lng;
-
-    @QueryParam("lat")
     private String lat;
 
-    public String getLat() {
-        return lat;
+    private String lng;
+
+    public LocationRequest(){
+
     }
 
     public String getLng() {
         return lng;
     }
 
+    public String getLat() {
+        return lat;
+    }
+
+    public void setLng(String lng) {
+        this.lng = lng;
+    }
+
+    public void setLat(String lat) {
+        this.lat = lat;
+    }
 }

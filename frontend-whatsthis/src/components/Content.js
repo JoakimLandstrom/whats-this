@@ -1,23 +1,26 @@
 import React, {Component} from 'react';
 import {geolocated} from 'react-geolocated';
 import 'whatwg-fetch'
+import List from './List'
 
 class Content extends Component {
 
     state = {
-
+        locations: []
     }
 
     getInfo = () => {
 
-        var url = 'http://localhost:8080/locations?lat='+this.props.coords.latitude+'&lng='+this.props.coords.longitude;
+        var url = 'http://localhost:8080/locations?lat=59.5214305&lng=17.9011611';//this.props.coords.latitude+'&lng='+this.props.coords.longitude;
 
         fetch(url)
             .then(function(response) {
 
                 return response.json()
             }).then((response) => {
-                console.log(response)
+               this.setState({
+                  locations: response
+               });
         });
 
     }
@@ -33,6 +36,8 @@ class Content extends Component {
                         <div>Geolocation is not enabled</div>
                 )}
 
+
+                <List locations={this.state.locations}/>
             </div>
         );
     }

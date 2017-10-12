@@ -1,22 +1,18 @@
 package se.jola.whatsthis.exceptions;
 
-import se.jola.whatsthis.models.ExceptionModel;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
+@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
 public class ServiceException extends RuntimeException {
 
-    private ExceptionModel exceptionModel;
+    private static final long serialVersionUID = 7130457633105877568L;
 
-    public ServiceException(ExceptionModel exceptionModel){
-        super(exceptionModel.getExceptionMessage());
-        this.exceptionModel = exceptionModel;
+    public ServiceException(String message){
+        super(message);
     }
 
-    public ServiceException(ExceptionModel exceptionModel, Throwable throwable){
-        super(exceptionModel.getExceptionMessage(), throwable);
-        this.exceptionModel = exceptionModel;
-    }
-
-    public ExceptionModel getExceptionModel() {
-        return exceptionModel;
+    public ServiceException(String message, Throwable throwable){
+       super(message,throwable);
     }
 }

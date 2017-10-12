@@ -7,6 +7,7 @@
     "react-dom": "^16.0.0",
     "react-geolocated": "^2.0.0",
     "react-scripts": "1.0.14",
+    "react-tinderable": "^0.1.8",
     "whatwg-fetch": "^2.0.3"
   },
   "scripts": {

@@ -1,16 +1,18 @@
 package se.jola.whatsthis.services;
 
+import org.gavaghan.geodesy.Ellipsoid;
+import org.gavaghan.geodesy.GeodeticCalculator;
+import org.gavaghan.geodesy.GlobalPosition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import se.jola.whatsthis.exceptions.ApiException;
 import se.jola.whatsthis.exceptions.ServiceException;
 import se.jola.whatsthis.externalapis.impl.GoogleGeoApi;
 import se.jola.whatsthis.externalapis.impl.WikiInfoApi;
-import se.jola.whatsthis.models.ExceptionModel;
-import se.jola.whatsthis.models.Location;
+import se.jola.whatsthis.models.LocationResponse;
 import se.jola.whatsthis.models.LocationRequest;
 
-import javax.ws.rs.core.Response;
+import java.util.Comparator;
 import java.util.List;
 
 @Component
@@ -22,31 +24,48 @@ public final class LocationService {
     @Autowired
     private WikiInfoApi infoApi;
 
-    public List<Location> getLocations(LocationRequest locationRequest) {
+    private GeodeticCalculator geoCalc = new GeodeticCalculator();
+
+
+    public List<LocationResponse> getLocations(LocationRequest locationRequest) {
 
         try {
-            //List<Location> locations = geoApi.getLocations(locationRequest.getLat(), locationRequest.getLng());
-            List<Location> locations = geoApi.getLocationsFromRequest(locationRequest);
-            return getLocationsInfo(locations);
+            List<LocationResponse> locationResponses = geoApi.getLocationsFromRequest(locationRequest);
+            locationResponses = getLocationsInfo(locationResponses, locationRequest);
+            locationResponses.sort(Comparator.comparing(LocationResponse::getDistance));
+
+            return locationResponses;
         } catch (ApiException e) {
-            e.printStackTrace();
-            throw new ServiceException(new ExceptionModel("Couldnt fetch geolocation names from lat:"
-                    + locationRequest.getLat() + " and lng:" + locationRequest.getLng(), Response.Status.INTERNAL_SERVER_ERROR));
+            throw new ServiceException("Couldnt fetch geolocation names from lat:"
+                    + locationRequest.getLat() + " and lng:" + locationRequest.getLng());
         }
     }
 
-    private List<Location> getLocationsInfo(List<Location> locations) throws ServiceException {
+    private List<LocationResponse> getLocationsInfo(List<LocationResponse> locationResponses, LocationRequest locationRequest) throws ServiceException {
 
-        for (Location location : locations) {
+        for (LocationResponse locationResponse : locationResponses) {
             try {
-                infoApi.getInfoAboutLocationName(location);
-
+                locationResponse.setLocationRequest(locationRequest);
+                infoApi.getInfoAboutLocationName(locationResponse);
+                locationResponse.setDistance((int) countDistance(locationResponse));
             } catch (ApiException e) {
-                throw new ServiceException(new ExceptionModel("Couldn't get poi info from:" + location.getName(), Response.Status.INTERNAL_SERVER_ERROR));
-
+                throw new ServiceException("Couldn't get poi info from:" + locationResponse.getName());
             }
         }
+        return locationResponses;
+    }
 
-        return locations;
+    private double countDistance(LocationResponse response) {
+
+        Ellipsoid reference = Ellipsoid.WGS84;
+
+        GlobalPosition pointA = new GlobalPosition(Double.parseDouble(response.getGeometry().getLocation().getLat()),
+                Double.parseDouble(response.getGeometry().getLocation().getLng()), 0.0);
+
+        GlobalPosition userPos = new GlobalPosition(Double.parseDouble(response.getLocationRequest().getLat()),
+                Double.parseDouble(response.getLocationRequest().getLng()), 0.0);
+
+        return geoCalc.calculateGeodeticCurve(reference, userPos, pointA).getEllipsoidalDistance();
+
     }
 }

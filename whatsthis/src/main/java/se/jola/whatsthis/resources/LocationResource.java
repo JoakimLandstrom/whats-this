@@ -3,29 +3,23 @@ package se.jola.whatsthis.resources;
 
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import se.jola.whatsthis.models.LocationRequest;
 import se.jola.whatsthis.services.LocationService;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
-@Service
-@Path("locations")
-@Consumes(MediaType.APPLICATION_JSON)
-@Produces(MediaType.APPLICATION_JSON)
-@CrossOrigin(origins = "http")
+@RestController
+@RequestMapping(value = "/locations", produces = "Application/json")
+@CrossOrigin(origins = "http://localhost:3000")
 public final class LocationResource {
 
     @Autowired
     private LocationService service;
 
-    @GET
-    public Response getClosestPois(@BeanParam LocationRequest locationRequest) {
+    @RequestMapping(method = RequestMethod.GET)
+    public ResponseEntity<String> getClosestPois(LocationRequest locationRequest) {
 
-        return Response.ok(new Gson().toJson(service.getLocations(locationRequest))).build();
+        return ResponseEntity.ok(new Gson().toJson(service.getLocations(locationRequest)));
     }
 
 }
