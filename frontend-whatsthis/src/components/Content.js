@@ -11,7 +11,7 @@ class Content extends Component {
 
     getInfo = () => {
 
-        var url = 'http://localhost:8080/locations?lat=59.5214305&lng=17.9011611';//this.props.coords.latitude+'&lng='+this.props.coords.longitude;
+        var url = 'http://localhost:8080/locations?lat=' + this.props.coords.latitude+'&lng='+this.props.coords.longitude;
 
         fetch(url)
             .then(function(response) {

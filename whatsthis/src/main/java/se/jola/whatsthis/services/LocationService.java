@@ -33,11 +33,10 @@ public final class LocationService {
             List<LocationResponse> locationResponses = geoApi.getLocationsFromRequest(locationRequest);
             locationResponses = getLocationsInfo(locationResponses, locationRequest);
             locationResponses.sort(Comparator.comparing(LocationResponse::getDistance));
-
+            locationResponses.removeIf(l -> l.getName().toLowerCase().matches("(.*(\\sab))|((^ab\\s).*)"));
             return locationResponses;
         } catch (ApiException e) {
-            throw new ServiceException("Couldnt fetch geolocation names from lat:"
-                    + locationRequest.getLat() + " and lng:" + locationRequest.getLng());
+            throw new ServiceException("Couldnt fetch geolocation names from lat:" + locationRequest.getLat() + " and lng:" + locationRequest.getLng());
         }
     }
 

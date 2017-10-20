@@ -22,7 +22,8 @@ public final class GoogleGeoApi {
         StringBuilder builder = new StringBuilder();
 
         return builder.append("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=").append(locationRequest.getLat()).append(",")
-                .append(locationRequest.getLng()).append("&type=point_of_interest|locality|natural_feature|place_of_worship|establishment&radius=200&key=").append(getKey()).toString();
+                .append(locationRequest.getLng()).append("&type=point_of_interest|locality|natural_feature|place_of_worship|establishment&radius=200t" +
+                        "&key=").append(getKey()).toString();
 
     }
 

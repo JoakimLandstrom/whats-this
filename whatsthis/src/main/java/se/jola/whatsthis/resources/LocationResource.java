@@ -10,7 +10,7 @@ import se.jola.whatsthis.services.LocationService;
 
 @RestController
 @RequestMapping(value = "/locations", produces = "Application/json")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "*")
 public final class LocationResource {
 
     @Autowired
@@ -18,7 +18,6 @@ public final class LocationResource {
 
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<String> getClosestPois(LocationRequest locationRequest) {
-
         return ResponseEntity.ok(new Gson().toJson(service.getLocations(locationRequest)));
     }
 

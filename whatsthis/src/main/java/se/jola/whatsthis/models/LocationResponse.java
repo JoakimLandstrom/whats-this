@@ -13,7 +13,7 @@ public final class LocationResponse {
 
     private String fullUrl;
 
-    private String picLink;
+    private Photo[] photos;
 
     private LocationRequest locationRequest;
 
@@ -46,8 +46,8 @@ public final class LocationResponse {
         return fullUrl;
     }
 
-    public String getPicLink() {
-        return picLink;
+    public Photo[] getPhotos() {
+        return photos;
     }
 
     public int getDistance() {
@@ -70,8 +70,8 @@ public final class LocationResponse {
         this.fullUrl = fullUrl;
     }
 
-    public void setPicLink(String picLink) {
-        this.picLink = picLink;
+    public void setPhotos(Photo[] photos) {
+        this.photos = photos;
     }
 
     public void setVicinity(String vicinity) {
