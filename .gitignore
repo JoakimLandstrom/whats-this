@@ -4,6 +4,8 @@ src/main/resources/keys.properties
 .metadata
 .recommenders
 .git
+
 RemoteSystemsTempFiles/
 whatsthisapp/.settings/
 frontend-whatsthis/node_modules/
+/frontend-whatsthis/.idea/

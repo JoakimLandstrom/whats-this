@@ -3,9 +3,6 @@ import Img from 'react-image';
 
 class List extends Component {
 
-    state = {
-        location: 6,
-    }
 
     renderImage(row) {
         if(row.hasOwnProperty('photos')) {
@@ -22,9 +19,9 @@ class List extends Component {
             <div className="card__container">
                 {this.props.locations.length > 0 ?
                     <div>
-                        <h3>{this.props.locations[this.state.location].name}</h3>
-                        <p>{this.props.locations[this.state.location].extract}</p>
-                        {this.renderImage(this.props.locations[this.state.location])}
+                        <h3>{this.props.locations[4].name}</h3>
+                        <p>{this.props.locations[4].extract}</p>
+                        {this.renderImage(this.props.locations[4])}
                     </div> :
                     <div></div>}
             </div>
