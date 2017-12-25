@@ -32,14 +32,3 @@ class List extends Component {
 
 
 export default List;
-
-/* return (
-            this.props.locations.map((row, index) => {
-                    return <div className="card__container" key={index}>
-                        <h3>{row.name}</h3>
-                        <p>{row.extract}</p>
-                        {this.renderImage(row)}
-                    </div>
-                }
-            )
-        );*/
